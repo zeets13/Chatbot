@@ -1,0 +1,37 @@
+*.safetensors
+model/
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python environment
+.python-version
+
+# SQLite database
+users.db
+
+# Logs
+logs/
+*.log
+
+# Model checkpoints (if generated)
+results/
+checkpoints/
+
+# Hugging Face cache
+.cache/
+
+# OS files
+.DS_Store
+Thumbs.db
