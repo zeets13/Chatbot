@@ -1,9 +1,5 @@
-from database import *
+from predictor import analyze_message
 
-initialize_database()
+result = analyze_message("hello")
 
-create_user("Jarifa")
-
-user = get_user("Jarifa")
-
-print(dict(user))
+print(result)
