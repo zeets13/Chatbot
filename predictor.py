@@ -1,9 +1,6 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 import torch
-
-# ==========================
-# Configuration
-# ==========================
+from config import CATEGORY_THRESHOLD
 
 MODEL_PATH = "model"
 
@@ -16,7 +13,6 @@ LABELS = [
     "loathe"
 ]
 
-THRESHOLD = 0.5
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -64,30 +60,46 @@ def analyze_message(text):
 
         probability = float(probability)
 
-        if probability > max_probability:
-            max_probability = probability
+        max_probability = max(max_probability, probability)
 
-        if probability >= THRESHOLD:
+        if probability >= CATEGORY_THRESHOLD:
 
             detected_categories.append({
+
                 "category": label,
+
                 "confidence": round(probability * 100, 2)
+
             })
 
-    # Determine if message is safe
     is_safe = len(detected_categories) == 0
 
-    # Determine severity
+    detected_names = [
+
+        item["category"]
+
+        for item in detected_categories
+
+    ]
+
     if is_safe:
+
         severity = "Safe"
 
-    elif max_probability >= 0.90:
+    elif (
+        "threat" in detected_names
+        or
+        "highly_malignant" in detected_names
+    ):
+
         severity = "High"
 
-    elif max_probability >= 0.70:
+    elif len(detected_names) >= 2:
+
         severity = "Medium"
 
     else:
+
         severity = "Low"
 
     return {
@@ -101,43 +113,3 @@ def analyze_message(text):
         "categories": detected_categories
 
     }
-
-
-# ==========================
-# Test Mode
-# ==========================
-
-if __name__ == "__main__":
-
-    print("\nHate Speech Detector Ready!\n")
-
-    while True:
-
-        text = input("You: ")
-
-        if text.lower() in ["exit", "quit"]:
-            break
-
-        result = analyze_message(text)
-
-        print("\nResult")
-        print("------------------------")
-        print(f"Safe: {result['safe']}")
-        print(f"Severity: {result['severity']}")
-        print(f"Confidence: {result['confidence']}%")
-
-        if result["categories"]:
-
-            print("\nDetected Categories:")
-
-            for category in result["categories"]:
-
-                print(
-                    f"• {category['category']} ({category['confidence']}%)"
-                )
-
-        else:
-
-            print("\nNo hate speech detected.")
-
-        print()

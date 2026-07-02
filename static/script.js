@@ -55,7 +55,7 @@ async function sendMessage(){
     if(data.status==="safe"){
 
         reply=`
-        ✅ <b>Message is Safe</b><br><br>
+        <b>Message is Safe</b><br><br>
 
         Confidence:
         ${data.confidence.toFixed(2)}%
@@ -65,7 +65,7 @@ async function sendMessage(){
     else if(data.status==="hate"){
 
         reply=`
-        ❌ <b>Hate Speech Detected</b><br><br>
+        <b>Hate Speech Detected</b><br><br>
 
         Severity:
         <b>${data.severity}</b>
@@ -89,7 +89,7 @@ async function sendMessage(){
     else if(data.status==="blocked"){
 
         reply=`
-        🚫 <b>You are blocked.</b>
+        <b>You are blocked.</b>
 
         <br><br>
 
